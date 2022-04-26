@@ -11,7 +11,10 @@ function Navbar() {
 	const [bookmarks, setBookmarks] = useState(null);
 
 	useEffect(() => {
-		setBookmarks(JSON.parse(localStorage.getItem('bookmarks')));
+		setBookmarks(() => {
+			console.log(JSON.parse(localStorage.getItem('bookmarks')));
+			return JSON.parse(localStorage.getItem('bookmarks'));
+		});
 		setLoading(false);
 	}, []);
 
