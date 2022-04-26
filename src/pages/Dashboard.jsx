@@ -73,6 +73,8 @@ function Dashboard() {
 	useEffect(() => {
 		if (bookmarks !== JSON.parse(localStorage.getItem('bookmarks'))) {
 			localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+			// Create a new window event for our navbar to listen to (for pulling bookmarks)
 			window.dispatchEvent(new Event('storage'));
 		}
 	}, [bookmarks]);
