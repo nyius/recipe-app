@@ -10,7 +10,14 @@ function Dashboard() {
 	const navigate = useNavigate();
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [bookmarks, setBookmarks] = useState(JSON.parse(localStorage.getItem('bookmarks')));
+	const [bookmarks, setBookmarks] = useState(() => {
+		const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
+		if (bookmarksStorage === null) {
+			return [];
+		} else {
+			return bookmarksStorage;
+		}
+	});
 
 	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
