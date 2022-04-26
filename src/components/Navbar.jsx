@@ -55,15 +55,17 @@ function Navbar() {
 		e.preventDefault();
 	};
 
+	//---------------------------------------------------------------------------------------------------//
 	return (
-		<div className="navbar bg-primary h-28 text-primary-content mb-8">
+		<div className="navbar w-full flex gap-2 flex-col sm:flex-row bg-primary h-fit lg:h-28 text-primary-content mb-2 md:mb-8">
 			{/* ------------------------------------ Navbar Start ------------------------------------ */}
-			<div className="block lg:hidden navbar-start">
+			<div className="block lg:hidden flex-1 w-full">
+				{/* Hamburger */}
 				<div className="dropdown">
-					<label tabIndex="0" className="btn btn-ghost btn-circle btn-lg shadow-lg">
+					<label tabIndex="0" className="btn btn-ghost btn-circle btn-sm shadow-lg">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							className="h-10 w-10"
+							className="h-6 w-6"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -88,6 +90,74 @@ function Navbar() {
 						</li>
 						<li>
 							<button>About</button>
+						</li>
+					</ul>
+				</div>
+
+				{/* Bookmarks */}
+				<div className="dropdown text-neutral">
+					<label
+						htmlFor=""
+						tabIndex="0"
+						className="btn btn-sm btn-ghost btn-circle shadow-xl mx-4 cursor-pointer"
+					>
+						<div className="w-6 lg:w-10 rounded-full">
+							<BsFillBookmarksFill
+								className="text-accent h-6 w-6 lg:h-10  lg:w-10"
+								title="Your Bookmarks"
+							/>
+						</div>
+					</label>
+					<ul
+						className="mt-3 p-2 shadow menu dropdown-content bg-base-100 w-72 sm:w-96 rounded-box"
+						tabIndex="0"
+					>
+						{bookmarkLoading ? (
+							<Spinner />
+						) : (
+							bookmarks.map(bookmark => {
+								return (
+									<li key={bookmark.recipeId}>
+										<div
+											className="grid grid-cols-2 gap-2 cursor-pointer"
+											onClick={() => {
+												console.log(bookmark.recipeId);
+												navigate(`/recipe/${bookmark.recipeId}`);
+											}}
+											title={bookmark.recipeName}
+										>
+											<p className="">{bookmark.recipeName}</p>
+											<img
+												src={`${bookmark.recipeImg}`}
+												className="object-cover h-14 sm:h-28 w-full rounded-lg cursor-pointer"
+											/>
+										</div>
+									</li>
+								);
+							})
+						)}
+					</ul>
+				</div>
+
+				{/* User */}
+				<div className="dropdown text-neutral">
+					<label tabIndex="0" className="btn btn-sm btn-ghost btn-circle avatar shadow-xl">
+						<div className="w-6 lg:w-10 rounded-full">
+							<AiOutlineSmile className="text-accent h-6 w-6 lg:h-10 lg:w-10" />
+						</div>
+					</label>
+					<ul
+						tabIndex="0"
+						className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+					>
+						<li>
+							<a className="justify-between">Profile</a>
+						</li>
+						<li>
+							<a>Settings</a>
+						</li>
+						<li>
+							<a>Logout</a>
 						</li>
 					</ul>
 				</div>
@@ -145,75 +215,88 @@ function Navbar() {
 			</div>
 
 			{/* ------------------------------------ Navbar Logo ------------------------------------ */}
-			<div className="navbar-center">
+			<div className="hidden lg:block navbar-center">
 				<button className="btn btn-lg btn-ghost shadow-xl" onClick={() => navigate('/')}>
 					<RiCake3Line className="h-12 w-12" />
 				</button>
 			</div>
-			<div className="navbar-end">
+
+			{/* ------------------------------------ Navbar End ------------------------------------ */}
+			<div className="navbar-center ml-4 w-full sm:w-fit flex-col sm:flex-row lg:navbar-end">
 				{/* Search Bar */}
-				<form className="form-control mr-4" onSubmit={searchSubmit}>
+				<form className="form-control mr-4 w-full sm:w-80" onSubmit={searchSubmit}>
 					<input
 						type="text"
 						placeholder="Search"
-						className="input bg-secondary w-full text-neutral shadow-xl"
+						className="input input-sm lg:input-md bg-secondary w-full text-neutral shadow-xl"
 					/>
 				</form>
 
-				{/* Bookmarks */}
-				<div className="dropdown dropdown-end text-neutral">
-					<label htmlFor="" tabIndex="0" className="btn btn-ghost btn-circle shadow-xl mx-4 cursor-pointer">
-						<BsFillBookmarksFill className="text-accent h-10 w-10" title="Your Bookmarks" />
-					</label>
-					<ul className="mt-3 p-2 shadow menu dropdown-content bg-base-100 w-96 rounded-box" tabIndex="0">
-						{bookmarkLoading ? (
-							<Spinner />
-						) : (
-							bookmarks.map(bookmark => {
-								return (
-									<li key={bookmark.recipeId}>
-										<div
-											className="grid grid-cols-2 gap-2 cursor-pointer"
-											onClick={() => {
-												console.log(bookmark.recipeId);
-												navigate(`/recipe/${bookmark.recipeId}`);
-											}}
-											title={bookmark.recipeName}
-										>
-											<p className="">{bookmark.recipeName}</p>
-											<img
-												src={`${bookmark.recipeImg}`}
-												className="object-cover h-28 w-full rounded-lg cursor-pointer"
-											/>
-										</div>
-									</li>
-								);
-							})
-						)}
-					</ul>
-				</div>
+				<div className="hidden lg:block">
+					{/* Bookmarks */}
+					<div className="dropdown dropdown-end text-neutral">
+						<label
+							htmlFor=""
+							tabIndex="0"
+							className="btn btn-ghost btn-circle shadow-xl mx-4 cursor-pointer"
+						>
+							<div className="w-6 lg:w-10 rounded-full">
+								<BsFillBookmarksFill
+									className="text-accent h-6 w-6 lg:h-10  lg:w-10"
+									title="Your Bookmarks"
+								/>
+							</div>
+						</label>
+						<ul className="mt-3 p-2 shadow menu dropdown-content bg-base-100 w-96 rounded-box" tabIndex="0">
+							{bookmarkLoading ? (
+								<Spinner />
+							) : (
+								bookmarks.map(bookmark => {
+									return (
+										<li key={bookmark.recipeId}>
+											<div
+												className="grid grid-cols-2 gap-2 cursor-pointer"
+												onClick={() => {
+													console.log(bookmark.recipeId);
+													navigate(`/recipe/${bookmark.recipeId}`);
+												}}
+												title={bookmark.recipeName}
+											>
+												<p className="">{bookmark.recipeName}</p>
+												<img
+													src={`${bookmark.recipeImg}`}
+													className="object-cover h-28 w-full rounded-lg cursor-pointer"
+												/>
+											</div>
+										</li>
+									);
+								})
+							)}
+						</ul>
+					</div>
 
-				{/* User */}
-				<div className="dropdown dropdown-end text-neutral">
-					<label tabIndex="0" className="btn btn-ghost btn-circle avatar shadow-xl">
-						<div className="w-10 rounded-full">
-							<AiOutlineSmile className="text-accent h-10 w-10" />
-						</div>
-					</label>
-					<ul
-						tabIndex="0"
-						className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
-					>
-						<li>
-							<a className="justify-between">Profile</a>
-						</li>
-						<li>
-							<a>Settings</a>
-						</li>
-						<li>
-							<a>Logout</a>
-						</li>
-					</ul>
+					{/* User */}
+					<div className="dropdown dropdown-end text-neutral">
+						<label tabIndex="0" className="btn btn-ghost btn-circle avatar shadow-xl">
+							<div className="w-6 lg:w-10 rounded-full">
+								<AiOutlineSmile className="text-accent h-6 w-6 lg:h-10 lg:w-10" />
+							</div>
+						</label>
+						<ul
+							tabIndex="0"
+							className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+						>
+							<li>
+								<a className="justify-between">Profile</a>
+							</li>
+							<li>
+								<a>Settings</a>
+							</li>
+							<li>
+								<a>Logout</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

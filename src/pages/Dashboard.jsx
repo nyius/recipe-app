@@ -5,6 +5,7 @@ import { ImArrowUp, ImArrowDown } from 'react-icons/im';
 import { BsBookmark, BsFillBookmarkHeartFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
+import Header from '../components/Header';
 
 function Dashboard() {
 	const navigate = useNavigate();
@@ -82,14 +83,7 @@ function Dashboard() {
 	//---------------------------------------------------------------------------------------------------//
 	return (
 		<div className="w-full bg-base-100 mx-auto p-2 lg:p-8 shadow-xl">
-			<header className="mb-3 lg:mb-6 shadow-xl rounded-lg">
-				<p className=" p-4 text-xl lg:text-4xl font-black tracking-wider">
-					RECIPEFEED{' '}
-					<span className="text-sm lg:text-lg font-light text-primary ">
-						Your place for the best recipes around the world
-					</span>{' '}
-				</p>
-			</header>
+			<Header />
 			{loading ? (
 				<Spinner />
 			) : (

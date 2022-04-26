@@ -5,6 +5,7 @@ import { ImArrowUp, ImArrowDown } from 'react-icons/im';
 import { BsCheckCircleFill, BsBookmark, BsFillBookmarkHeartFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
+import Header from '../components/Header';
 
 function Recipe() {
 	const navigate = useNavigate();
@@ -94,23 +95,19 @@ function Recipe() {
 
 	//---------------------------------------------------------------------------------------------------//
 	return (
-		<div className="w-full max-w-screen-lg bg-base-100 mx-auto p-10 shadow-xl">
-			<header className="mb-12 shadow-xl rounded-lg">
-				<p className=" p-4 text-4xl font-black tracking-wider">
-					RECIPEFEED{' '}
-					<span className="text-lg font-light text-primary ">
-						Your place for the best recipe around the world
-					</span>{' '}
-				</p>
-			</header>
+		<div className="w-full max-w-screen-lg bg-base-100 mx-auto p-4 sm:p-10 shadow-xl">
+			<Header />
 			{loading ? (
 				<Spinner />
 			) : (
 				<div className="w-full">
-					<img src={`${recipe.strMealThumb}`} className="object-cover h-96 w-full rounded-lg shadow-lg" />
+					<img
+						src={`${recipe.strMealThumb}`}
+						className="object-cover h-42 sm:h-96 w-full rounded-lg shadow-lg"
+					/>
 					<p className="text-3xl my-5 font-black text-center w-full">{recipe.strMeal}</p>
 					<div className="flex justify-between">
-						<div className="flex gap-2">
+						<div className="flex flex-col sm:flex-row gap-2">
 							<span className="badge p-4 badge-lg cursor-pointer">{recipe.strCategory}</span>
 							<span className="badge p-4 badge-primary badge-lg cursor-pointer">{recipe.strArea}</span>
 							{recipe.strTags === null ? (
@@ -162,7 +159,7 @@ function Recipe() {
 						{instructions.map((instruction, i) => {
 							return (
 								<div className="mb-10" key={i}>
-									<p className="flex flex-row gap-3 font-bold mb-3">
+									<p className="flex flex-row gap-3 font-bold sm:mb-3">
 										<BsCheckCircleFill className="text-primary" /> Step {i + 1}
 									</p>
 									<p className="mb-5 ml-10">{instruction}</p>

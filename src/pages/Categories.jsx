@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Header from '../components/Header';
 import Spinner from '../components/Spinner';
 
 function Categories() {
@@ -14,7 +15,7 @@ function Categories() {
 			try {
 				const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
 				const data = await response.json();
-				console.log(data);
+
 				setCategories(data.categories);
 			} catch (error) {
 				console.log(error);
@@ -23,20 +24,13 @@ function Categories() {
 		};
 
 		getCategories();
-		setCategoriesLoading(true);
+		setCategoriesLoading(false);
 	}, []);
 
 	//---------------------------------------------------------------------------------------------------//
 	return (
 		<div className="w-full bg-base-100 mx-auto p-8 shadow-xl">
-			<header className="mb-6 shadow-xl rounded-lg">
-				<p className=" p-4 text-4xl font-black tracking-wider">
-					RECIPEFEED{' '}
-					<span className="text-lg font-light text-primary ">
-						Your place for the best recipes around the world
-					</span>{' '}
-				</p>
-			</header>
+			<Header />
 			{categoriesLoading ? (
 				<Spinner />
 			) : (

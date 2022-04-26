@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import Header from '../components/Header';
 
 function Category() {
 	const navigate = useNavigate();
 	const params = useParams();
 	const [category, setCategory] = useState(null);
-	const [loading, setLoading] = useState(true);
+	const [categoryLoading, setCategoryLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchCategory = async () => {
@@ -17,20 +18,14 @@ function Category() {
 		};
 
 		fetchCategory();
-		setLoading(false);
+		setCategoryLoading(false);
 	}, []);
 
+	//---------------------------------------------------------------------------------------------------//
 	return (
 		<div className="w-full max-w-screen-lg bg-base-100 mx-auto p-10 shadow-xl">
-			<header className="mb-12 shadow-xl rounded-lg">
-				<p className=" p-4 text-4xl font-black tracking-wider">
-					RECIPEFEED{' '}
-					<span className="text-lg font-light text-primary ">
-						Your place for the best recipe around the world
-					</span>{' '}
-				</p>
-			</header>
-			{loading ? (
+			<Header />
+			{categoryLoading ? (
 				<Spinner />
 			) : (
 				<div className="grid grid-cols-4 gap-6">
