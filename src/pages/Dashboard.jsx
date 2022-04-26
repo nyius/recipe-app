@@ -81,11 +81,11 @@ function Dashboard() {
 
 	//---------------------------------------------------------------------------------------------------//
 	return (
-		<div className="w-full bg-base-100 mx-auto p-8 shadow-xl">
-			<header className="mb-6 shadow-xl rounded-lg">
-				<p className=" p-4 text-4xl font-black tracking-wider">
+		<div className="w-full bg-base-100 mx-auto p-2 lg:p-8 shadow-xl">
+			<header className="mb-3 lg:mb-6 shadow-xl rounded-lg">
+				<p className=" p-4 text-xl lg:text-4xl font-black tracking-wider">
 					RECIPEFEED{' '}
-					<span className="text-lg font-light text-primary ">
+					<span className="text-sm lg:text-lg font-light text-primary ">
 						Your place for the best recipes around the world
 					</span>{' '}
 				</p>
@@ -93,16 +93,16 @@ function Dashboard() {
 			{loading ? (
 				<Spinner />
 			) : (
-				<div className="grid grid-cols-4 gap-6">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
 					{recipes.map((recipe, i) => {
 						return (
-							<div key={i} className={`w-full h-96 p-4 rounded-lg shadow-lg hover:bg-accent`}>
+							<div key={i} className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent`}>
 								<p className="font-bold text-xl mb-2 truncate cursor-pointer" title={recipe.strMeal}>
 									{recipe.strMeal}
 								</p>
 								<img
 									src={`${recipe.strMealThumb}`}
-									className="object-cover h-60 w-full rounded-lg cursor-pointer"
+									className="object-cover h-28 lg:h-60 w-full rounded-lg cursor-pointer"
 									onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
 								/>
 								<div className="flex my-4 gap-2 justify-between">
