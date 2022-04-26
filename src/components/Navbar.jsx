@@ -22,6 +22,19 @@ function Navbar() {
 		setLoading(false);
 	}, []);
 
+	useEffect(() => {
+		window.addEventListener('storage', () => {
+			setBookmarks(() => {
+				const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
+				if (bookmarksStorage === null) {
+					return [];
+				} else {
+					return bookmarksStorage;
+				}
+			});
+		});
+	});
+
 	const searchSubmit = async e => {
 		e.preventDefault();
 	};

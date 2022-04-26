@@ -73,6 +73,7 @@ function Dashboard() {
 	useEffect(() => {
 		if (bookmarks !== JSON.parse(localStorage.getItem('bookmarks'))) {
 			localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+			window.dispatchEvent(new Event('storage'));
 		}
 	}, [bookmarks]);
 
