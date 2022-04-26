@@ -7,9 +7,12 @@ import Spinner from './Spinner';
 
 function Navbar() {
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState(true);
+	const [bookmarkLoading, setBookmarkLoading] = useState(true);
+	const [categoriesLoading, setCategoriesLoading] = useState(true);
 	const [bookmarks, setBookmarks] = useState(null);
+	const [categories, setCategories] = useState([]);
 
+	// Get Bookmarks & Categories ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		setBookmarks(() => {
 			const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
@@ -19,9 +22,21 @@ function Navbar() {
 				return bookmarksStorage;
 			}
 		});
-		setLoading(false);
+
+		const getCategories = async () => {
+			const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+			const data = await response.json();
+
+			setCategories(data.categories);
+		};
+
+		getCategories();
+		setCategoriesLoading(false);
+		setBookmarkLoading(false);
+		setCategoriesLoading(false);
 	}, []);
 
+	// Listen for new bookmarks ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		window.addEventListener('storage', () => {
 			setBookmarks(() => {
@@ -35,12 +50,14 @@ function Navbar() {
 		});
 	});
 
+	// Search Bar ---------------------------------------------------------------------------------------------------//
 	const searchSubmit = async e => {
 		e.preventDefault();
 	};
 
 	return (
 		<div className="navbar bg-primary h-28 text-primary-content mb-8">
+			{/* ------------------------------------ Navbar Start ------------------------------------ */}
 			<div className="block lg:hidden navbar-start">
 				<div className="dropdown">
 					<label tabIndex="0" className="btn btn-ghost btn-circle btn-lg shadow-lg">
@@ -76,20 +93,58 @@ function Navbar() {
 				</div>
 			</div>
 			<div className="hidden lg:block navbar-start">
-				<ul tabIndex="0" className=" menu menu-horizontal p-0 text-2xl text-base-100">
+				<ul tabIndex="0" className="menu menu-horizontal p-0 text-base-100">
 					<li>
-						<button onClick={() => navigate('/')} className="font-black hover:shadow-lg">
+						<button onClick={() => navigate('/')} className="font-black hover:shadow-lg text-2xl">
 							Home
 						</button>
 					</li>
-					<li>
-						<button className="font-black hover:shadow-lg">Categories</button>
+
+					{/* -------------------------- Categories ------------------------------- */}
+					<li tabIndex="0">
+						<label
+							tabIndex={0}
+							className="font-black cursor-pointer text-2xl"
+							onClick={() => navigate('/categories')}
+						>
+							Categories
+						</label>
+						<ul
+							className="menu p-2 shadow-xl bg-base-100 w-96 h-screen max-h-120 max-h-lg rounded-box text-neutral overflow-auto"
+							tabIndex="0"
+						>
+							{categoriesLoading ? (
+								<Spinner />
+							) : (
+								categories.map((category, i) => {
+									return (
+										<li key={i}>
+											<div
+												className="grid grid-cols-2 gap-2 cursor-pointer"
+												onClick={() => {
+													navigate(`/category/${category.strCategory}`);
+												}}
+												title={category.strCategory}
+											>
+												<p className="">{category.strCategory}</p>
+												<img
+													src={`${category.strCategoryThumb}`}
+													className="object-cover h-28 w-full rounded-lg cursor-pointer"
+												/>
+											</div>
+										</li>
+									);
+								})
+							)}
+						</ul>
 					</li>
 					<li>
-						<button className="font-black hover:shadow-lg">About</button>
+						<button className="font-black hover:shadow-lg text-2xl">About</button>
 					</li>
 				</ul>
 			</div>
+
+			{/* ------------------------------------ Navbar Logo ------------------------------------ */}
 			<div className="navbar-center">
 				<button className="btn btn-lg btn-ghost shadow-xl" onClick={() => navigate('/')}>
 					<RiCake3Line className="h-12 w-12" />
@@ -111,7 +166,7 @@ function Navbar() {
 						<BsFillBookmarksFill className="text-accent h-10 w-10" title="Your Bookmarks" />
 					</label>
 					<ul className="mt-3 p-2 shadow menu dropdown-content bg-base-100 w-96 rounded-box" tabIndex="0">
-						{loading ? (
+						{bookmarkLoading ? (
 							<Spinner />
 						) : (
 							bookmarks.map(bookmark => {
