@@ -12,8 +12,12 @@ function Navbar() {
 
 	useEffect(() => {
 		setBookmarks(() => {
-			console.log(JSON.parse(localStorage.getItem('bookmarks')));
-			return JSON.parse(localStorage.getItem('bookmarks'));
+			const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
+			if (bookmarksStorage === null) {
+				return [];
+			} else {
+				return bookmarksStorage;
+			}
 		});
 		setLoading(false);
 	}, []);
