@@ -166,11 +166,15 @@ function Dashboard() {
 							className="hero bg-base-300 col-span-1 md:col-span-2 xl:col-span-4 h-fit md:h-96 rounded-xl shadow-lg overflow-hidden w-full"
 							style={{ backgroundImage: `url(${recipes[0].strMealThumb})` }}
 						>
-							<div class="hero-overlay bg-opacity-50 rounded-xl"></div>
+							<div className="hero-overlay bg-opacity-50 rounded-xl"></div>
 							<div className="hero-content flex-col lg:flex-row">
 								<div className="text-base-100 flex flex-col gap-2 md:gap-5 w-full ">
 									<h1 className="text-xl lg:text-3xl xl:text-5xl font-bold">{recipes[0].strMeal}</h1>
-									<p className="text-lg">{recipes[0].strInstructions.slice(0, 60)}...</p>
+									{recipes[0].strInstructions ? (
+										<p className="text-lg">{recipes[0].strInstructions.slice(0, 60)}...</p>
+									) : (
+										''
+									)}
 									<div className="flex flex-row gap-3">
 										{recipes[0].strCategory ? (
 											<span className="badge badge-lg badge-neutral cursor-pointer p-4">
