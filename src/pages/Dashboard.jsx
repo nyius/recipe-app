@@ -25,9 +25,23 @@ function Dashboard() {
 		}
 	});
 
+	const fetchSearchRecipes = async url => {
+		setLoading(true);
+		setRecipes([]);
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+
+			setRecipes(data.meals);
+			setLoading(false);
+		} catch (error) {
+			toast.error('There was a problem searching.');
+		}
+	};
+
 	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
-		const fetchRecipes = async () => {
+		const fetchRandomRecipes = async () => {
 			setLoading(true);
 
 			try {
@@ -43,26 +57,12 @@ function Dashboard() {
 			}
 		};
 
-		fetchRecipes();
+		fetchRandomRecipes();
 	}, []);
 
 	// Get search Term---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
-		const fetchSearchRecipes = async () => {
-			setLoading(true);
-
-			try {
-				const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
-				const data = await response.json();
-
-				setRecipes(data.meals);
-				setLoading(false);
-			} catch (error) {
-				toast.error('There was a problem searching.');
-			}
-		};
-
-		const fetchRecipes = async () => {
+		const fetchRandomRecipes = async () => {
 			setLoading(true);
 			setRecipes([]);
 			try {
@@ -79,9 +79,9 @@ function Dashboard() {
 		};
 
 		if (searchTerm !== '') {
-			fetchSearchRecipes();
+			fetchSearchRecipes(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
 		} else if (searchTerm === '') {
-			fetchRecipes();
+			fetchRandomRecipes();
 		}
 	}, [searchTerm]);
 
@@ -130,31 +130,36 @@ function Dashboard() {
 	return (
 		<div className="w-full bg-base-100 mx-auto p-2 lg:p-8 shadow-xl">
 			<Header />
-			{loading ? (
-				<Spinner />
-			) : (
-				<div className="grid grid-cols-12 gap-2">
-					<div className="hidden xl:block col-span-2 mr-4 mt-3 shadow-xl p-4 rounded-lg">
-						<p className="text-xl font-bold">Categories</p>
-						<div className="divider" />
-						{loadingCats ? (
-							<Spinner />
-						) : (
-							<div>
-								{categories.map((category, i) => {
-									return (
-										<p
-											className="text-xl mb-3 p-2 cursor-pointer hover:bg-accent rounded-lg"
-											onClick={() => navigate(`/category/${category.strCategory}`)}
-											key={i}
-										>
-											{category.strCategory}
-										</p>
-									);
-								})}
-							</div>
-						)}
-					</div>
+			<div className="grid grid-cols-12 gap-2">
+				<div className="hidden xl:block col-span-2 mr-4 mt-3 shadow-xl p-4 rounded-lg">
+					<p className="text-xl font-bold">Categories</p>
+					<div className="divider" />
+					{loadingCats ? (
+						<Spinner />
+					) : (
+						<div>
+							{categories.map((category, i) => {
+								return (
+									<p
+										className="text-xl mb-3 p-2 cursor-pointer hover:bg-accent rounded-lg"
+										onClick={() => {
+											navigate('/');
+											fetchSearchRecipes(
+												`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category.strCategory}`
+											);
+										}}
+										key={i}
+									>
+										{category.strCategory}
+									</p>
+								);
+							})}
+						</div>
+					)}
+				</div>
+				{loading ? (
+					<Spinner />
+				) : (
 					<div className="col-span-12 xl:col-span-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
 						{recipes.map((recipe, i) => {
 							return (
@@ -206,8 +211,8 @@ function Dashboard() {
 							);
 						})}
 					</div>
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 }
