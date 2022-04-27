@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RiCake3Line } from 'react-icons/ri';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { BsFillBookmarksFill } from 'react-icons/bs';
 import Spinner from './Spinner';
+import SearchContext from '../context/search/SearchContext';
 
 function Navbar() {
 	const navigate = useNavigate();
@@ -11,6 +12,8 @@ function Navbar() {
 	const [categoriesLoading, setCategoriesLoading] = useState(true);
 	const [bookmarks, setBookmarks] = useState(null);
 	const [categories, setCategories] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const { search, dispatch } = useContext(SearchContext);
 
 	// Get Bookmarks & Categories ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
@@ -53,6 +56,15 @@ function Navbar() {
 	// Search Bar ---------------------------------------------------------------------------------------------------//
 	const searchSubmit = async e => {
 		e.preventDefault();
+		navigate(`/?q=${searchTerm}`);
+		dispatch({
+			type: 'SEARCH',
+			payload: { searchTerm },
+		});
+	};
+
+	const searchChange = e => {
+		setSearchTerm(e.target.value);
 	};
 
 	//---------------------------------------------------------------------------------------------------//
@@ -86,7 +98,7 @@ function Navbar() {
 							<button onClick={() => navigate('/')}>Home</button>
 						</li>
 						<li>
-							<button>Categories</button>
+							<button onClick={() => navigate('/categories')}>Categories</button>
 						</li>
 						<li>
 							<button>About</button>
@@ -128,7 +140,7 @@ function Navbar() {
 										>
 											<p className="">{bookmark.recipeName}</p>
 											<img
-												src={`${bookmark.recipeImg}`}
+												src={`${bookmark.recipeImg}/preview`}
 												className="object-cover h-14 sm:h-28 w-full rounded-lg cursor-pointer"
 											/>
 										</div>
@@ -229,6 +241,8 @@ function Navbar() {
 						type="text"
 						placeholder="Search"
 						className="input input-sm lg:input-md bg-secondary w-full text-neutral shadow-xl"
+						defaultValue={searchTerm}
+						onChange={searchChange}
 					/>
 				</form>
 
@@ -264,7 +278,7 @@ function Navbar() {
 											>
 												<p className="">{bookmark.recipeName}</p>
 												<img
-													src={`${bookmark.recipeImg}`}
+													src={`${bookmark.recipeImg}/preview`}
 													className="object-cover h-28 w-full rounded-lg cursor-pointer"
 												/>
 											</div>

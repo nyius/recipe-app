@@ -17,6 +17,7 @@ function Categories() {
 				const data = await response.json();
 
 				setCategories(data.categories);
+				setCategoriesLoading(false);
 			} catch (error) {
 				console.log(error);
 				toast.error('Something went wrong. Please try again');
@@ -24,24 +25,23 @@ function Categories() {
 		};
 
 		getCategories();
-		setCategoriesLoading(false);
 	}, []);
 
 	//---------------------------------------------------------------------------------------------------//
 	return (
-		<div className="w-full bg-base-100 mx-auto p-8 shadow-xl">
+		<div className="w-full bg-base-100 mx-auto p-2 lg:p-8 shadow-xl">
 			<Header />
 			{categoriesLoading ? (
 				<Spinner />
 			) : (
 				<div className="my-10">
 					<p className="text-3xl my-3 text-center font-black">Categories</p>
-					<div className="grid grid-cols-4 gap-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
 						{categories.map((category, i) => {
 							return (
 								<div
 									key={i}
-									className={`w-full h-80 p-4 rounded-lg shadow-lg hover:bg-accent cursor-pointer`}
+									className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent cursor-pointer`}
 									onClick={() => {
 										navigate(`/category/${category.strCategory}`);
 									}}
@@ -51,7 +51,7 @@ function Categories() {
 									</p>
 									<img
 										src={`${category.strCategoryThumb}`}
-										className="object-cover h-60 w-full rounded-lg"
+										className="object-cover h-40 lg:h-80 w-full rounded-lg cursor-pointer"
 									/>
 								</div>
 							);

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { MdAvTimer } from 'react-icons/md';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ImArrowUp, ImArrowDown } from 'react-icons/im';
 import { BsBookmark, BsFillBookmarkHeartFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
 import Header from '../components/Header';
+import queryString from 'query-string';
+import SearchContext from '../context/search/SearchContext';
 
 function Dashboard() {
+	const location = useLocation();
 	const navigate = useNavigate();
+	const { searchTerm, dispatch } = useContext(SearchContext);
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [bookmarks, setBookmarks] = useState(() => {
@@ -21,8 +24,12 @@ function Dashboard() {
 	});
 
 	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
+
+	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		const fetchRecipes = async () => {
+			setLoading(true);
+
 			try {
 				for (let i = 0; i < 10; i++) {
 					const response = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
@@ -38,6 +45,45 @@ function Dashboard() {
 
 		fetchRecipes();
 	}, []);
+
+	// Get search Term---------------------------------------------------------------------------------------------------//
+	useEffect(() => {
+		const fetchSearchRecipes = async () => {
+			setLoading(true);
+
+			try {
+				const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
+				const data = await response.json();
+
+				setRecipes(data.meals);
+				setLoading(false);
+			} catch (error) {
+				toast.error('There was a problem searching.');
+			}
+		};
+
+		const fetchRecipes = async () => {
+			setLoading(true);
+			setRecipes([]);
+			try {
+				for (let i = 0; i < 10; i++) {
+					const response = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
+					const data = await response.json();
+
+					setRecipes(prevState => [...prevState, data.meals[0]]);
+					setLoading(false);
+				}
+			} catch (error) {
+				toast.error(`There was an error loading recipes.`);
+			}
+		};
+
+		if (searchTerm !== '') {
+			fetchSearchRecipes();
+		} else if (searchTerm === '') {
+			fetchRecipes();
+		}
+	}, [searchTerm]);
 
 	// Add to Bookmarks---------------------------------------------------------------------------------------------------//
 	const addToBookmarks = (recipeId, recipeImg, recipeName) => {
