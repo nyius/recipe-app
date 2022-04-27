@@ -161,6 +161,43 @@ function Dashboard() {
 					<Spinner />
 				) : (
 					<div className="col-span-12 xl:col-span-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
+						{/* ------------------------- Hero Image ------------------------ */}
+						<div
+							className="hero bg-base-300 col-span-1 md:col-span-2 xl:col-span-4 h-fit md:h-96 rounded-xl shadow-lg overflow-hidden w-full"
+							style={{ backgroundImage: `url(${recipes[0].strMealThumb})` }}
+						>
+							<div class="hero-overlay bg-opacity-50 rounded-xl"></div>
+							<div className="hero-content flex-col lg:flex-row">
+								<div className="text-base-100 flex flex-col gap-2 md:gap-5 w-full ">
+									<h1 className="text-xl lg:text-3xl xl:text-5xl font-bold">{recipes[0].strMeal}</h1>
+									<p className="text-lg">{recipes[0].strInstructions.slice(0, 60)}...</p>
+									<div className="flex flex-row gap-3">
+										{recipes[0].strCategory ? (
+											<span className="badge badge-lg badge-neutral cursor-pointer p-4">
+												{recipes[0].strCategory}
+											</span>
+										) : (
+											''
+										)}
+										{recipes[0].strArea ? (
+											<span className="badge badge-lg badge-primary cursor-pointer p-4">
+												{recipes[0].strArea}
+											</span>
+										) : (
+											''
+										)}
+									</div>
+									<button
+										className="btn btn-md w-52 btn-secondary"
+										onClick={() => navigate(`/recipe/${recipes[0].idMeal}`)}
+									>
+										See Recipe
+									</button>
+								</div>
+							</div>
+						</div>
+
+						{/* ------------------------- Recipes ------------------------ */}
 						{recipes.map((recipe, i) => {
 							return (
 								<div key={i} className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent`}>
