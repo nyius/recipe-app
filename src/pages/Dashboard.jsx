@@ -7,11 +7,13 @@ import Spinner from '../components/Spinner';
 import Header from '../components/Header';
 import queryString from 'query-string';
 import SearchContext from '../context/search/SearchContext';
+import CategoriesContext from '../context/categories/CategoriesContext';
 
 function Dashboard() {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { searchTerm, dispatch } = useContext(SearchContext);
+	const { searchTerm } = useContext(SearchContext);
+	const { categories, loading: loadingCats } = useContext(CategoriesContext);
 	const [recipes, setRecipes] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [bookmarks, setBookmarks] = useState(() => {
@@ -22,8 +24,6 @@ function Dashboard() {
 			return bookmarksStorage;
 		}
 	});
-
-	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
 
 	// Fetch Recipes ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
@@ -126,62 +126,86 @@ function Dashboard() {
 		}
 	}, [bookmarks]);
 
-	//---------------------------------------------------------------------------------------------------//
+	//------------------------------------------------------------------------------------------------------------------//
 	return (
 		<div className="w-full bg-base-100 mx-auto p-2 lg:p-8 shadow-xl">
 			<Header />
 			{loading ? (
 				<Spinner />
 			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
-					{recipes.map((recipe, i) => {
-						return (
-							<div key={i} className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent`}>
-								<p className="font-bold text-xl mb-2 truncate cursor-pointer" title={recipe.strMeal}>
-									{recipe.strMeal}
-								</p>
-								<img
-									src={`${recipe.strMealThumb}`}
-									className="object-cover h-28 lg:h-60 w-full rounded-lg cursor-pointer"
-									onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
-								/>
-								<div className="flex my-4 gap-2 justify-between">
-									<span className="badge cursor-pointer">{recipe.strCategory}</span>
-									<span className="badge badge-primary cursor-pointer">{recipe.strArea}</span>
-									<p className="w-full text-right font-light">
-										Recipe by: <a href={`${recipe.strSource}`}>Source</a>
-									</p>
-								</div>
-								<div className="flex flex-row items-center justify-between">
-									<div className="flex flex-row items-center">
-										<ImArrowUp className="text-info hover:text-primary w-5 h-5 mr-2 cursor-pointer" />
-										<p className="mr-4">4782</p>
-										<ImArrowDown className="text-info hover:text-error w-5 h-5 mr-2 cursor-pointer" />
-										<p className="mr-4">29</p>
-									</div>
-
-									{/* ------------------- Bookmark Icon ----------------------- */}
-									{bookmarks.find(bookmark => bookmark.recipeId === recipe.idMeal) ? (
-										<BsFillBookmarkHeartFill
-											className="h-6 w-6 cursor-pointer"
-											title="Add to Bookmarks"
-											id={recipe.idMeal}
-											onClick={e => removeBookmark(recipe.idMeal)}
-										/>
-									) : (
-										<BsBookmark
-											className="h-6 w-6 cursor-pointer"
-											title="Add to Bookmarks"
-											id={recipe.idMeal}
-											onClick={e =>
-												addToBookmarks(recipe.idMeal, recipe.strMealThumb, recipe.strMeal)
-											}
-										/>
-									)}
-								</div>
+				<div className="grid grid-cols-12 gap-2">
+					<div className="hidden xl:block col-span-2 mr-4 mt-3 shadow-xl p-4 rounded-lg">
+						<p className="text-xl font-bold">Categories</p>
+						<div className="divider" />
+						{loadingCats ? (
+							<Spinner />
+						) : (
+							<div>
+								{categories.map((category, i) => {
+									return (
+										<p
+											className="text-xl mb-3 p-2 cursor-pointer hover:bg-accent rounded-lg"
+											onClick={() => navigate(`/category/${category.strCategory}`)}
+											key={i}
+										>
+											{category.strCategory}
+										</p>
+									);
+								})}
 							</div>
-						);
-					})}
+						)}
+					</div>
+					<div className="col-span-12 xl:col-span-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
+						{recipes.map((recipe, i) => {
+							return (
+								<div key={i} className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent`}>
+									<p
+										className="font-bold text-xl mb-2 truncate cursor-pointer"
+										title={recipe.strMeal}
+									>
+										{recipe.strMeal}
+									</p>
+									<img
+										src={`${recipe.strMealThumb}`}
+										className="object-cover h-28 lg:h-60 w-full rounded-lg cursor-pointer"
+										onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
+									/>
+									<div className="flex my-4 gap-2 justify-between">
+										<span className="badge cursor-pointer">{recipe.strCategory}</span>
+										<span className="badge badge-primary cursor-pointer">{recipe.strArea}</span>
+										<p className="w-full text-right font-light">
+											Recipe by: <a href={`${recipe.strSource}`}>Source</a>
+										</p>
+									</div>
+									<div className="flex flex-row items-center justify-between">
+										<div className="flex flex-row items-center">
+											<ImArrowUp className="text-info hover:text-primary w-5 h-5 mr-2 cursor-pointer" />
+											<p className="mr-4">{recipe.idMeal - 50000}</p>
+										</div>
+
+										{/* ------------------- Bookmark Icon ----------------------- */}
+										{bookmarks.find(bookmark => bookmark.recipeId === recipe.idMeal) ? (
+											<BsFillBookmarkHeartFill
+												className="h-6 w-6 cursor-pointer"
+												title="Add to Bookmarks"
+												id={recipe.idMeal}
+												onClick={e => removeBookmark(recipe.idMeal)}
+											/>
+										) : (
+											<BsBookmark
+												className="h-6 w-6 cursor-pointer"
+												title="Add to Bookmarks"
+												id={recipe.idMeal}
+												onClick={e =>
+													addToBookmarks(recipe.idMeal, recipe.strMealThumb, recipe.strMeal)
+												}
+											/>
+										)}
+									</div>
+								</div>
+							);
+						})}
+					</div>
 				</div>
 			)}
 		</div>

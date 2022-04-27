@@ -5,15 +5,15 @@ import { AiOutlineSmile } from 'react-icons/ai';
 import { BsFillBookmarksFill } from 'react-icons/bs';
 import Spinner from './Spinner';
 import SearchContext from '../context/search/SearchContext';
+import CategoriesContext from '../context/categories/CategoriesContext';
 
 function Navbar() {
 	const navigate = useNavigate();
 	const [bookmarkLoading, setBookmarkLoading] = useState(true);
-	const [categoriesLoading, setCategoriesLoading] = useState(true);
 	const [bookmarks, setBookmarks] = useState(null);
-	const [categories, setCategories] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
 	const { search, dispatch } = useContext(SearchContext);
+	const { categories, loading: categoriesLoading } = useContext(CategoriesContext);
 
 	// Get Bookmarks & Categories ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
@@ -26,17 +26,7 @@ function Navbar() {
 			}
 		});
 
-		const getCategories = async () => {
-			const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
-			const data = await response.json();
-
-			setCategories(data.categories);
-		};
-
-		getCategories();
-		setCategoriesLoading(false);
 		setBookmarkLoading(false);
-		setCategoriesLoading(false);
 	}, []);
 
 	// Listen for new bookmarks ---------------------------------------------------------------------------------------------------//
@@ -71,6 +61,7 @@ function Navbar() {
 	return (
 		<div className="navbar w-full flex gap-2 flex-col sm:flex-row bg-primary h-fit lg:h-28 text-primary-content mb-2 md:mb-8">
 			{/* ------------------------------------ Navbar Start ------------------------------------ */}
+			{/* Mobile Menu */}
 			<div className="block lg:hidden flex-1 w-full">
 				{/* Hamburger */}
 				<div className="dropdown">
@@ -99,9 +90,6 @@ function Navbar() {
 						</li>
 						<li>
 							<button onClick={() => navigate('/categories')}>Categories</button>
-						</li>
-						<li>
-							<button>About</button>
 						</li>
 					</ul>
 				</div>
@@ -174,6 +162,7 @@ function Navbar() {
 					</ul>
 				</div>
 			</div>
+			{/* Full-w Menu */}
 			<div className="hidden lg:block navbar-start">
 				<ul tabIndex="0" className="menu menu-horizontal p-0 text-base-100">
 					<li>
@@ -219,9 +208,6 @@ function Navbar() {
 								})
 							)}
 						</ul>
-					</li>
-					<li>
-						<button className="font-black hover:shadow-lg text-2xl">About</button>
 					</li>
 				</ul>
 			</div>
