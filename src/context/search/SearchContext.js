@@ -3,6 +3,11 @@ import SearchReducer from './SearchReducer';
 
 const SearchContext = createContext();
 
+/**
+ * Provides the context for a user entering a search term
+ * @param {*} param0
+ * @returns
+ */
 export function SearchProvider({ children }) {
 	const initialState = {
 		searchTerm: '',

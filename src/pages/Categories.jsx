@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
 import Spinner from '../components/Spinner';
 
 function Categories() {
-	const navigate = useNavigate();
+	// State to store all of the categories
 	const [categories, setCategories] = useState(null);
+	// Loading state
 	const [categoriesLoading, setCategoriesLoading] = useState(true);
 
-	// Get Categories ---------------------------------------------------------------------------------------------------//
+	const navigate = useNavigate();
+
+	// useEffect to handle Getting the Categories from the Api ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		const getCategories = async () => {
 			try {
@@ -37,6 +40,7 @@ function Categories() {
 				<div className="my-10">
 					<p className="text-3xl my-3 text-center font-black">Categories</p>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
+						{/* Loop over each category and display its card */}
 						{categories.map((category, i) => {
 							return (
 								<div

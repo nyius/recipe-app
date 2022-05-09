@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { RiCake3Line } from 'react-icons/ri';
 import { AiOutlineSmile } from 'react-icons/ai';
 import { BsFillBookmarksFill } from 'react-icons/bs';
@@ -8,14 +8,20 @@ import SearchContext from '../context/search/SearchContext';
 import CategoriesContext from '../context/categories/CategoriesContext';
 
 function Navbar() {
-	const navigate = useNavigate();
+	// Loading bookmark state
 	const [bookmarkLoading, setBookmarkLoading] = useState(true);
+	// A state to store the bookmarks
 	const [bookmarks, setBookmarks] = useState(null);
+	// State to store search term
 	const [searchTerm, setSearchTerm] = useState('');
+	// Context to handle search terms
 	const { search, dispatch } = useContext(SearchContext);
+	// Context to handle categories
 	const { categories, loading: categoriesLoading } = useContext(CategoriesContext);
 
-	// Get Bookmarks & Categories ---------------------------------------------------------------------------------------------------//
+	const navigate = useNavigate();
+
+	// useEffect to Get Bookmarks & Categories ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		setBookmarks(() => {
 			const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
@@ -29,8 +35,9 @@ function Navbar() {
 		setBookmarkLoading(false);
 	}, []);
 
-	// Listen for new bookmarks ---------------------------------------------------------------------------------------------------//
+	// useEffect to Listen for new bookmarks ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
+		// add an event listener to the browser to listen for a 'storage' event. When we get that event, store our bookmarks
 		window.addEventListener('storage', () => {
 			setBookmarks(() => {
 				const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
@@ -43,7 +50,12 @@ function Navbar() {
 		});
 	});
 
-	// Search Bar ---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	/**
+	 * Handles the user entering something into the search bar
+	 * Expects an event (e)
+	 * @param {*} e
+	 */
 	const searchSubmit = async e => {
 		e.preventDefault();
 		navigate(`/?q=${searchTerm}`);
@@ -53,6 +65,12 @@ function Navbar() {
 		});
 	};
 
+	//---------------------------------------------------------------------------------------------------//
+	/**
+	 * Updates the search state when a user enters anything
+	 * expects an event (e)
+	 * @param {*} e
+	 */
 	const searchChange = e => {
 		setSearchTerm(e.target.value);
 	};
@@ -162,7 +180,8 @@ function Navbar() {
 					</ul>
 				</div>
 			</div>
-			{/* Full-w Menu */}
+
+			{/* Full-w Menu (non mobile) */}
 			<div className="hidden lg:block navbar-start">
 				<ul tabIndex="0" className="menu menu-horizontal p-0 text-base-100">
 					<li>
@@ -275,7 +294,7 @@ function Navbar() {
 						</ul>
 					</div>
 
-					{/* User */}
+					{/* ------------------------------------ User ------------------------------------ */}
 					<div className="dropdown dropdown-end text-neutral">
 						<label tabIndex="0" className="btn btn-ghost btn-circle avatar shadow-xl">
 							<div className="w-6 lg:w-10 rounded-full">

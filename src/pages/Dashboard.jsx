@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ImArrowUp, ImArrowDown } from 'react-icons/im';
+import { ImArrowUp } from 'react-icons/im';
 import { BsBookmark, BsFillBookmarkHeartFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
 import Header from '../components/Header';
-import queryString from 'query-string';
 import SearchContext from '../context/search/SearchContext';
 import CategoriesContext from '../context/categories/CategoriesContext';
 
 function Dashboard() {
-	const location = useLocation();
-	const navigate = useNavigate();
+	// Context that stores the users search term
 	const { searchTerm } = useContext(SearchContext);
+	// Context that stores any categories that the user has selected
 	const { categories, loading: loadingCats } = useContext(CategoriesContext);
+
+	// State to store the fetched recipes
 	const [recipes, setRecipes] = useState([]);
+	// loading state
 	const [loading, setLoading] = useState(true);
+	// State to store all of the users bookmarks. Grabs them from the local storage.
 	const [bookmarks, setBookmarks] = useState(() => {
 		const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
 		if (bookmarksStorage === null) {
@@ -25,6 +28,14 @@ function Dashboard() {
 		}
 	});
 
+	const navigate = useNavigate();
+
+	//---------------------------------------------------------------------------------------------------//
+	/**
+	 * Handles fetching recipes by either search term or category name.
+	 * Expects a url to theMealDb.
+	 * @param {string} url
+	 */
 	const fetchSearchRecipes = async url => {
 		setLoading(true);
 		setRecipes([]);
@@ -60,12 +71,17 @@ function Dashboard() {
 		fetchRandomRecipes();
 	}, []);
 
-	// Get search Term---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	// useEffect to grab the first 10 recipes when the page first loads.
+	// Also listens for any search terms entered.
+	// Listens for when the user enters any letter into the search box and instantly searches the DB for recipes.
 	useEffect(() => {
+		//  This function grabs the first 10 random recipes displayed to the user on page load
 		const fetchRandomRecipes = async () => {
 			setLoading(true);
 			setRecipes([]);
 			try {
+				// We want to grab 10 recipes from the api, but due to the way that theMealDb handles non-paid users we have to use a for-loop to repeat the request 10 different times to grab 10 recipes.
 				for (let i = 0; i < 10; i++) {
 					const response = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
 					const data = await response.json();
@@ -78,6 +94,8 @@ function Dashboard() {
 			}
 		};
 
+		// If there is a search term, fetch all search results.
+		// If no search term, then just run our random 10 recipes func
 		if (searchTerm !== '') {
 			fetchSearchRecipes(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
 		} else if (searchTerm === '') {
@@ -85,7 +103,14 @@ function Dashboard() {
 		}
 	}, [searchTerm]);
 
-	// Add to Bookmarks---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	/**
+	 * handles the user adding a new bookmark for a recipe
+	 * Expects a recipe Id (recipeId), recipe image url (recipeImg), and a recipe name (recipeName)
+	 * @param {string} recipeId
+	 * @param {string} recipeImg
+	 * @param {string} recipeName
+	 */
 	const addToBookmarks = (recipeId, recipeImg, recipeName) => {
 		setBookmarks(prevState =>
 			prevState
@@ -108,7 +133,12 @@ function Dashboard() {
 		toast.success('Added Recipe to Bookmarks!');
 	};
 
-	// remove bookmark ---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	/**
+	 * Handles the user removing a recipe bookmark.
+	 * Expects a recipe ID (recipeId).
+	 * @param {*} recipeId
+	 */
 	const removeBookmark = recipeId => {
 		const bookmark = bookmarks.find(bookmark => bookmark.recipeId === recipeId);
 		setBookmarks(prevState => prevState.splice(bookmark, 1));
@@ -116,7 +146,7 @@ function Dashboard() {
 		toast.success('Removed bookmark');
 	};
 
-	// Set Bookmarks ---------------------------------------------------------------------------------------------------//
+	// useEffect to get the users Bookmarks ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		if (bookmarks !== JSON.parse(localStorage.getItem('bookmarks'))) {
 			localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
@@ -138,6 +168,7 @@ function Dashboard() {
 						<Spinner />
 					) : (
 						<div>
+							{/* Loop over all of the categories and create a card for the sidebar */}
 							{categories.map((category, i) => {
 								return (
 									<p

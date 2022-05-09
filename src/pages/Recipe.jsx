@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-import { MdAvTimer } from 'react-icons/md';
-import { ImArrowUp, ImArrowDown } from 'react-icons/im';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BsCheckCircleFill, BsBookmark, BsFillBookmarkHeartFill } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
 import Header from '../components/Header';
 
 function Recipe() {
-	const navigate = useNavigate();
-	const params = useParams();
+	// State to store the recipe
 	const [recipe, setRecipe] = useState(null);
+	// loading state
 	const [loading, setLoading] = useState(true);
+	// State to store each ingredient
 	const [ingredients, setIngredients] = useState([]);
+	// State to split and store each step for the instructions
 	const [instructions, setInstructions] = useState([]);
+	// State to load bookmarks
 	const [bookmarks, setBookmarks] = useState(() => {
 		const bookmarksStorage = JSON.parse(localStorage.getItem('bookmarks'));
 		if (bookmarksStorage === null) {
@@ -23,7 +24,11 @@ function Recipe() {
 		}
 	});
 
-	// Load Recipe ---------------------------------------------------------------------------------------------------//
+	const navigate = useNavigate();
+	const params = useParams();
+
+	// useEffect to Load the Recipe ---------------------------------------------------------------------------------------------------//
+	// Handles fetching the recipe,  and splitting the ingredients & isntructions
 	useEffect(() => {
 		const fetchRecipe = async () => {
 			try {
@@ -52,7 +57,14 @@ function Recipe() {
 		fetchRecipe();
 	}, [navigate, params.id]);
 
-	// Add to Bookmarks---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	/**
+	 * handles the user adding a new bookmark for a recipe
+	 * Expects a recipe Id (recipeId), recipe image url (recipeImg), and a recipe name (recipeName)
+	 * @param {string} recipeId
+	 * @param {string} recipeImg
+	 * @param {string} recipeName
+	 */
 	const addToBookmarks = (recipeId, recipeImg, recipeName) => {
 		setBookmarks(prevState =>
 			prevState
@@ -75,7 +87,12 @@ function Recipe() {
 		toast.success('Added Recipe to Bookmarks!');
 	};
 
-	// remove bookmark ---------------------------------------------------------------------------------------------------//
+	// ---------------------------------------------------------------------------------------------------//
+	/**
+	 * Handles the user removing a recipe bookmark.
+	 * Expects a recipe ID (recipeId).
+	 * @param {*} recipeId
+	 */
 	const removeBookmark = recipeId => {
 		const bookmark = bookmarks.find(bookmark => bookmark.recipeId === recipeId);
 		setBookmarks(prevState => prevState.splice(bookmark, 1));
@@ -83,7 +100,7 @@ function Recipe() {
 		toast.success('Removed bookmark');
 	};
 
-	// Set Bookmarks ---------------------------------------------------------------------------------------------------//
+	// useEffect to get & Set Bookmarks ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
 		if (bookmarks !== JSON.parse(localStorage.getItem('bookmarks'))) {
 			localStorage.setItem('bookmarks', JSON.stringify(bookmarks));

@@ -3,6 +3,11 @@ import CategoriesReducer from './CategoriesReducer';
 
 const CategoriesContext = createContext();
 
+/**
+ * Provides the context to handle the user picking a recipe category
+ * @param {*} param0
+ * @returns
+ */
 export function CategoriesProvider({ children }) {
 	const [loading, setLoading] = useState(true);
 	const initialState = {

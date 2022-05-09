@@ -4,10 +4,13 @@ import Spinner from '../components/Spinner';
 import Header from '../components/Header';
 
 function Category() {
+	// Load all recipes for a specific category
+	const [category, setCategory] = useState(null);
+	// state for loading
+	const [categoryLoading, setCategoryLoading] = useState(true);
+
 	const navigate = useNavigate();
 	const params = useParams();
-	const [category, setCategory] = useState(null);
-	const [categoryLoading, setCategoryLoading] = useState(true);
 
 	// Fetch recipes in category ---------------------------------------------------------------------------------------------------//
 	useEffect(() => {
@@ -32,6 +35,7 @@ function Category() {
 				<div className="my-10">
 					<p className="text-3xl my-3 text-center font-black">{params.category}</p>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 lg:gap-6">
+						{/* Loop over each recipe and display its card */}
 						{category.map((recipe, i) => {
 							return (
 								<div key={i} className={`w-full h-fit p-4 rounded-lg shadow-lg hover:bg-accent`}>
